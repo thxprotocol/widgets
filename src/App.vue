@@ -30,9 +30,9 @@
 import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
 import { User, UserManager } from 'oidc-client';
-import { config } from '@/utils/oidc';
 import IconChevronRight from './components/IconChevronRight.vue';
 import { API_ROOT, WALLET_URL } from './utils/secrets';
+import { getOIDCConfig } from './utils/oidc';
 
 @Component({
     components: {
@@ -41,10 +41,12 @@ import { API_ROOT, WALLET_URL } from './utils/secrets';
 })
 export default class App extends Vue {
     walletUrl = WALLET_URL;
-    userManager: UserManager = new UserManager(config);
+    userManager!: UserManager;
     user: User | null = null;
     error = '';
     poolAddress = '';
+    clientId = '';
+    clientSecret = '';
     rewardId = '';
     rewardAmount = '';
     rewardSymbol = '';
@@ -60,13 +62,23 @@ export default class App extends Vue {
         }
 
         this.poolAddress = url.searchParams.get('asset_pool') || '';
+        this.clientId = url.searchParams.get('client_id') || '';
+        this.clientSecret = url.searchParams.get('client_secret') || '';
         this.rewardId = url.searchParams.get('reward_id') || '';
         this.rewardAmount = url.searchParams.get('reward_amount') || '';
         this.rewardSymbol = url.searchParams.get('reward_symbol') || '';
 
-        if (!this.poolAddress || !this.rewardId) {
+        if (!this.poolAddress || !this.rewardId || !this.clientId || !this.clientSecret) {
             this.error = 'URL Search Params are invalid.';
         }
+
+        await this.createUserManager();
+    }
+
+    async createUserManager() {
+        const config = getOIDCConfig(this.clientId, this.clientSecret);
+
+        this.userManager = new UserManager(config);
 
         const user = await this.userManager.getUser();
         this.user = user && !user.expired ? user : null;
