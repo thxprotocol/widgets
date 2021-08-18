@@ -57,13 +57,21 @@ export default class App extends Vue {
         const url = new URL(window.location.href);
         const code = url.searchParams.get('code');
 
+        this.clientId = localStorage.getItem('thx:claim:oidc:clientId') || url.searchParams.get('client_id') || '';
+        localStorage.setItem('thx:claim:oidc:clientId', this.clientId);
+        this.clientSecret =
+            localStorage.getItem('thx:claim:oidc:clientSecret') || url.searchParams.get('client_secret') || '';
+        localStorage.setItem('thx:claim:oidc:clientSecret', this.clientSecret);
+
+        if (!this.userManager) {
+            await this.createUserManager();
+        }
+
         if (code) {
             return await this.signinRedirectCallback();
         }
 
         this.poolAddress = url.searchParams.get('asset_pool') || '';
-        this.clientId = url.searchParams.get('client_id') || '';
-        this.clientSecret = url.searchParams.get('client_secret') || '';
         this.rewardId = url.searchParams.get('reward_id') || '';
         this.rewardAmount = url.searchParams.get('reward_amount') || '';
         this.rewardSymbol = url.searchParams.get('reward_symbol') || '';
@@ -72,20 +80,18 @@ export default class App extends Vue {
             this.error = 'URL Search Params are invalid.';
         }
 
-        await this.createUserManager();
-    }
-
-    async createUserManager() {
-        const config = getOIDCConfig(this.clientId, this.clientSecret);
-
-        this.userManager = new UserManager(config);
-
         const user = await this.userManager.getUser();
         this.user = user && !user.expired ? user : null;
 
         if (this.user) {
             await this.checkReward();
         }
+    }
+
+    async createUserManager() {
+        const config = getOIDCConfig(this.clientId, this.clientSecret);
+
+        this.userManager = new UserManager(config);
     }
 
     async checkReward() {
@@ -144,6 +150,7 @@ export default class App extends Vue {
 
     async signinRedirectCallback() {
         try {
+            debugger;
             await this.userManager.signinPopupCallback();
         } catch (e) {
             return { error: e };
