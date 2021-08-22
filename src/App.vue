@@ -31,7 +31,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
 import { User, UserManager } from 'oidc-client';
 import IconChevronRight from './components/IconChevronRight.vue';
-import { API_ROOT, WALLET_URL } from './utils/secrets';
+import { API_ROOT, BASE_URL, WALLET_URL } from './utils/secrets';
 import { getOIDCConfig } from './utils/oidc';
 
 @Component({
@@ -98,20 +98,33 @@ export default class App extends Vue {
         try {
             const r = await axios({
                 method: 'GET',
-                url: API_ROOT + `/v1/rewards/${this.rewardId}`,
+                url: API_ROOT + `/v1/account`,
                 headers: {
                     Authorization: `Bearer ${this.user?.access_token}`,
-                    AssetPool: this.poolAddress,
                 },
             });
+            const address = r.data.address;
 
-            if (r.status !== 200) {
-                return { error: Error('GET /reward/:id failed.') };
+            try {
+                const r = await axios({
+                    method: 'GET',
+                    url: API_ROOT + `/v1/rewards/${this.rewardId}`,
+                    headers: {
+                        Authorization: `Bearer ${this.user?.access_token}`,
+                        AssetPool: this.poolAddress,
+                    },
+                });
+
+                if (r.status !== 200) {
+                    return { error: Error('GET /reward/:id failed.') };
+                }
+
+                this.isClaimed = r.data.beneficiaries.includes(this.user?.profile.address);
+            } catch (e) {
+                return { error: new Error('Unable to claim reward.') };
             }
-
-            this.isClaimed = r.data.beneficiaries.includes(this.user?.profile.address);
         } catch (e) {
-            return { error: new Error('Unable to claim reward.') };
+            return { error: new Error('Unable to get account data.') };
         }
     }
 
@@ -140,7 +153,9 @@ export default class App extends Vue {
         try {
             await this.userManager.clearStaleState();
 
-            this.user = await this.userManager.signinPopup();
+            this.user = await this.userManager.signinPopup({
+                extraQueryParams: { return_url: WALLET_URL },
+            });
 
             await this.checkReward();
         } catch (e) {
@@ -150,7 +165,6 @@ export default class App extends Vue {
 
     async signinRedirectCallback() {
         try {
-            debugger;
             await this.userManager.signinPopupCallback();
         } catch (e) {
             return { error: e };
@@ -191,8 +205,6 @@ body {
 button:disabled {
     opacity: 0.75;
     cursor: not-allowed !important;
-}
-.btn {
 }
 
 .btn-link {
