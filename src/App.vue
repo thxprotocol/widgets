@@ -14,13 +14,19 @@
                     <strong class="ml-1 text-purple">{{ rewardAmount }} {{ rewardSymbol }}</strong>
                 </a>
             </div>
-            <button v-if="user" @click="claim()" :disabled="isClaimed">
-                <span>Claim</span>
-                <icon-chevron-right />
+            <button v-if="user" @click="claim()" :disabled="isClaimed || loading">
+                <div v-if="loading" class="spinner"></div>
+                <template v-else>
+                    <span>Claim</span>
+                    <icon-chevron-right />
+                </template>
             </button>
-            <button v-if="!user" @click="signinRedirect()">
-                <span>Login</span>
-                <icon-chevron-right />
+            <button v-if="!user" @click="signinRedirect()" :disabled="loading">
+                <div v-if="loading" class="spinner"></div>
+                <template v-else>
+                    <span>Claim</span>
+                    <icon-chevron-right />
+                </template>
             </button>
         </div>
     </div>
@@ -31,7 +37,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
 import { User, UserManager } from 'oidc-client';
 import IconChevronRight from './components/IconChevronRight.vue';
-import { API_ROOT, BASE_URL, WALLET_URL } from './utils/secrets';
+import { API_ROOT, WALLET_URL } from './utils/secrets';
 import { getOIDCConfig } from './utils/oidc';
 
 @Component({
@@ -52,6 +58,7 @@ export default class App extends Vue {
     rewardSymbol = '';
 
     isClaimed = true;
+    loading = false;
 
     async mounted() {
         const url = new URL(window.location.href);
@@ -95,6 +102,7 @@ export default class App extends Vue {
     }
 
     async checkReward() {
+        this.loading = true;
         try {
             const r = await axios({
                 method: 'GET',
@@ -104,31 +112,29 @@ export default class App extends Vue {
                 },
             });
             const address = r.data.address;
+            const res = await axios({
+                method: 'GET',
+                url: API_ROOT + `/v1/rewards/${this.rewardId}`,
+                headers: {
+                    Authorization: `Bearer ${this.user?.access_token}`,
+                    AssetPool: this.poolAddress,
+                },
+            });
 
-            try {
-                const r = await axios({
-                    method: 'GET',
-                    url: API_ROOT + `/v1/rewards/${this.rewardId}`,
-                    headers: {
-                        Authorization: `Bearer ${this.user?.access_token}`,
-                        AssetPool: this.poolAddress,
-                    },
-                });
-
-                if (r.status !== 200) {
-                    return { error: Error('GET /reward/:id failed.') };
-                }
-
-                this.isClaimed = r.data.beneficiaries.includes(this.user?.profile.address);
-            } catch (e) {
-                return { error: new Error('Unable to claim reward.') };
+            if (res.status !== 200) {
+                throw new Error('GET /reward/:id failed.');
             }
+
+            this.isClaimed = res.data.beneficiaries.includes(address);
         } catch (e) {
-            return { error: new Error('Unable to get account data.') };
+            this.error = e.toString();
+        } finally {
+            this.loading = false;
         }
     }
 
     async claim() {
+        this.loading = true;
         try {
             const r = await axios({
                 method: 'POST',
@@ -146,6 +152,8 @@ export default class App extends Vue {
             await this.checkReward();
         } catch (e) {
             return { error: new Error('Unable to claim reward.') };
+        } finally {
+            this.loading = false;
         }
     }
 
@@ -259,6 +267,33 @@ button:disabled {
         &:focus {
             box-shadow: 0 0 0 0.2rem rgb(114 94 202 / 50%);
         }
+    }
+}
+
+.card div.spinner {
+    display: inline-block;
+    padding: 0;
+    position: relative;
+    left: 50%;
+    margin-left: -7.5px;
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes spin {
+    to {
+        -webkit-transform: rotate(360deg);
     }
 }
 </style>
