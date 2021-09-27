@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css?family=Exo+2:200,400,400i,700,700i,800,800i,900,900i');
+@import './node_modules/bootstrap/scss/mixins';
+@import './node_modules/bootstrap/scss/functions';
+@import './scss/variables';
+
+// Required
+@import './node_modules/bootstrap/scss/variables';
+
+// Optional
+@import './node_modules/bootstrap/scss/reboot';
+@import './node_modules/bootstrap/scss/utilities';
+@import './node_modules/bootstrap/scss/root';
+@import './node_modules/bootstrap/scss/type';
+
+// Defaults
+@import './node_modules/bootstrap/scss/card';
+@import './node_modules/bootstrap/scss/badge';
+@import './node_modules/bootstrap/scss/forms';
+@import './node_modules/bootstrap/scss/custom-forms';
+@import './node_modules/bootstrap/scss/list-group';
+@import './node_modules/bootstrap/scss/alert';
+@import './node_modules/bootstrap/scss/grid';
+@import './node_modules/bootstrap/scss/modal';
+@import './node_modules/bootstrap/scss/close';
+@import './node_modules/bootstrap/scss/tooltip';
+@import './node_modules/bootstrap/scss/transitions';
+@import './node_modules/bootstrap/scss/buttons';
+@import './node_modules/bootstrap/scss/spinners';
+@import './node_modules/bootstrap/scss/nav';
+@import './node_modules/bootstrap/scss/navbar';
+@import './node_modules/bootstrap/scss/images';
+@import './node_modules/bootstrap/scss/tables';
+
+// Reset
+@import './scss/root';
+
+// Regions
+@import './scss/jumbotron';
+@import './scss/card';
+@import './scss/contact';
+@import './scss/team';
+@import './scss/hooper';
+
+// UI Components
+@import './scss/custom-switch';
+@import './scss/buttons';
+@import './scss/navbar';
+@import './scss/tab';
+@import './scss/number';
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    background: $darker;
+
+    #app {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+
+        .card {
+            border: 0;
+        }
+    }
+}
+
+.shape-wrapper {
+    background: radial-gradient(circle at center, lighten($dark, 10) 0, black 100%);
+    height: 300px;
+}
+
+@keyframes identifier {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+#shape {
+    position: relative;
+    margin: 0 auto;
+    top: 90px;
+    width: 135px;
+    height: 135px;
+    transform-style: preserve-3d;
+    transition: all 1s;
+    transform: scale(1);
+    transform: rotateX(-15deg) rotateY(-30deg);
+    animation: identifier cubic-bezier(1, 0, 0, 1);
+}
+#shape > div {
+    position: absolute;
+    width: 135px;
+    height: 135px;
+    background-color: rgba(255, 255, 255, 0.1);
+    opacity: 0.75;
+    background-size: cover;
+}
+#shape .ft {
+    opacity: 1;
+    transform: translateZ(90px);
+}
+#shape .rt {
+    transform: rotateY(90deg) translateZ(90px);
+}
+#shape .bk {
+    transform: rotateY(180deg) translateZ(90px);
+}
+#shape .lt {
+    transform: rotateY(270deg) translateZ(90px);
+}
+#shape .tp {
+    background: black;
+    transform: rotateX(90deg) translateZ(90px);
+}
+#shape .bm {
+    transform: rotateX(270deg) rotateY(0deg) translateZ(90px);
+}
