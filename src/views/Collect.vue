@@ -8,21 +8,19 @@
                 <div class="col-md-4">
                     <div class="shape-wrapper mb-3">
                         <div id="shape">
-                            <div class="ft" :style="`background-image: url(${require('../assets/fabio.png')})`"></div>
-                            <div
-                                class="rt"
-                                :style="`background-image: url(${require('../assets/fabio-avatar.png')})`"
-                            ></div>
+                            <div class="ft" :style="`background-image: url(${creator.collectible.asset})`"></div>
+                            <div class="rt" :style="`background-image: url(${creator.collectible.avatar})`"></div>
                             <div class="bk"></div>
                             <div class="lt"></div>
                             <div class="tp"></div>
                             <div class="bm"></div>
                         </div>
                     </div>
-                    <p class="text-muted">Created by <a href="">Fabio Wibmer</a></p>
+                    <p class="text-muted">
+                        Created by <a href="">{{ creator.name }}</a>
+                    </p>
                     <p>
-                        This unique piece of video content has been shot during the championships in 2009. It shows a
-                        young Fabio doing his first backflip on the bike.
+                        {{ creator.collectible.description }}
                     </p>
                     <hr class="border-dark" />
                     <button
@@ -52,8 +50,10 @@
                     <a class="btn btn-link btn-block text-light" href="https://www.google.nl"> About the creator </a>
                 </div>
                 <div class="col-md-8">
-                    <h1>#32 - My First Backflip</h1>
-                    <p class="text-muted">Currently owned by <a href="">The Fabio Wibmer Collection</a></p>
+                    <h1>#32 - {{ creator.collectible.title }}</h1>
+                    <p class="text-muted">
+                        Currently owned by <a href="">{{ creator.pool }}</a>
+                    </p>
 
                     <div class="mt-4 mb-2">
                         <strong>
@@ -145,7 +145,7 @@
                                 <td class="border-dark text-right">0x9B3A6</td>
                                 <td class="border-dark text-right">0x88B1F</td>
                                 <td class="border-dark text-right">
-                                    4 days ago
+                                    1 days ago
                                     <button class="btn btn-link btn-sm">
                                         <i class="fas fa-external-link-alt text-gray"></i>
                                     </button>
@@ -157,7 +157,7 @@
                                 <td class="border-dark text-right">0x6F886</td>
                                 <td class="border-dark text-right">0x9B3A6</td>
                                 <td class="border-dark text-right">
-                                    4 days ago
+                                    3 days ago
                                     <button class="btn btn-link btn-sm">
                                         <i class="fas fa-external-link-alt text-gray"></i>
                                     </button>
@@ -169,7 +169,7 @@
                                 <td class="border-dark text-right">0xFA9B3</td>
                                 <td class="border-dark text-right">0x6F886</td>
                                 <td class="border-dark text-right">
-                                    4 days ago
+                                    6 days ago
                                     <button class="btn btn-link btn-sm">
                                         <i class="fas fa-external-link-alt text-gray"></i>
                                     </button>
@@ -181,7 +181,7 @@
                                 <td class="border-dark text-right">0x00000</td>
                                 <td class="border-dark text-right">0xFA9B3</td>
                                 <td class="border-dark text-right">
-                                    4 days ago
+                                    9 days ago
                                     <button class="btn btn-link btn-sm">
                                         <i class="fas fa-external-link-alt text-gray"></i>
                                     </button>
@@ -222,6 +222,49 @@ export default class ViewCollect extends Vue {
 
     error = '';
     loading = false;
+
+    creators = [
+        {
+            name: 'Van Apple Art',
+            pool: 'The Van Apple Art Collection',
+            picture: require('../assets/fabio-picture.jpg'),
+            collectible: {
+                title: 'The New World Order',
+                avatar: require('../assets/appleart-avatar.png'),
+                asset: require('../assets/appleart.png'),
+                description:
+                    'Van Apple visualizes the bigger picture, there is no line between fantasy and reality. He tries to make you part of the play.',
+            },
+        },
+        {
+            name: 'Ruben Lenten',
+            pool: 'The LEN10 Collection',
+            picture: require('../assets/fabio-picture.jpg'),
+            collectible: {
+                title: 'LEN10 is Back',
+                avatar: require('../assets/len10-avatar.png'),
+                asset: require('../assets/len10.png'),
+                description:
+                    "After 3 surgeries, a lot of patience and hard work I've made it back to my kiteboard. So stoked to feel the freedom of kiting again after two years.",
+            },
+        },
+        {
+            name: 'Apple Art',
+            pool: 'The Fabio Wibmer Collection',
+            picture: require('../assets/fabio-picture.jpg'),
+            collectible: {
+                title: 'My First Backflip',
+                avatar: require('../assets/fabio-avatar.png'),
+                asset: require('../assets/fabio.png'),
+                description:
+                    'This unique piece of video content has been shot during the championships in 2009. It shows a young Fabio doing his first backflip on the bike.',
+            },
+        },
+    ];
+
+    get creator() {
+        return this.creators[0];
+    }
 
     mounted() {
         // debugger;
