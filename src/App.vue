@@ -112,6 +112,11 @@ export default class App extends Vue {
                 },
             });
             const address = r.data.address;
+
+            if (!address) {
+                throw new Error('No known address for this user. Please access https://wallet.thx.network.');
+            }
+
             const res = await axios({
                 method: 'GET',
                 url: API_ROOT + `/v1/rewards/${this.rewardId}`,
