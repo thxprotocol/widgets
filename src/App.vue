@@ -24,7 +24,7 @@
             <button v-if="!user" @click="signinRedirect()" :disabled="loading">
                 <div v-if="loading" class="spinner"></div>
                 <template v-else>
-                    <span>Claim</span>
+                    <span>Sign in</span>
                     <icon-chevron-right />
                 </template>
             </button>
@@ -145,13 +145,17 @@ export default class App extends Vue {
                 },
             });
 
+            if (r.data.error.message) {
+                throw new Error(r.data.error.message);
+            }
+
             if (r.status !== 200) {
-                return { error: Error('POST /reward/:id/claim failed.') };
+                throw new Error('POST /reward/:id/claim failed.');
             }
 
             await this.checkReward();
-        } catch (e) {
-            return { error: new Error('Unable to claim reward.') };
+        } catch (error) {
+            this.error = (error as any).message;
         } finally {
             this.loading = false;
         }
