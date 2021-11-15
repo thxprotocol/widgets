@@ -260,10 +260,22 @@ export default class ViewCollect extends Vue {
                     'This unique piece of video content has been shot during the championships in 2009. It shows a young Fabio doing his first backflip on the bike.',
             },
         },
+        {
+            name: 'Matthias Dandois',
+            pool: 'The Dandois Collection',
+            picture: require('../assets/dois-picture.jpg'),
+            collectible: {
+                title: 'Unlocked Down - A Midnight Cruise in Paris',
+                avatar: require('../assets/dois-avatar.png'),
+                asset: require('../assets/dois.jpg'),
+                description:
+                    'Paris is the most visited city in the world and is always full of energy and surprises. The streets that were once full of cars, tourist and pedestrians suddenly became quiet and empty ',
+            },
+        },
     ];
 
     get creator() {
-        return this.creators[0];
+        return this.creators[3];
     }
 
     mounted() {
