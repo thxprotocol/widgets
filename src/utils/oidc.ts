@@ -1,8 +1,8 @@
-import { API_ROOT, BASE_URL } from './secrets';
+import { AUTH_URL, BASE_URL } from './secrets';
 
 export function getOIDCConfig(clientId: string, clientSecret: string) {
     return {
-        authority: API_ROOT,
+        authority: AUTH_URL,
         client_id: clientId,
         client_secret: clientSecret,
         redirect_uri: BASE_URL,
