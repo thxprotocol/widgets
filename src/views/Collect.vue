@@ -272,10 +272,22 @@ export default class ViewCollect extends Vue {
                     'Paris is the most visited city in the world and is always full of energy and surprises. The streets that were once full of cars, tourist and pedestrians suddenly became quiet and empty ',
             },
         },
+        {
+            name: 'World Surf League',
+            pool: 'The WSL Collection',
+            picture: require('../assets/wsl-picture.jpg'),
+            collectible: {
+                title: 'Paige Alms At Todos Santos',
+                avatar: require('../assets/wsl-avatar.jpg'),
+                asset: require('../assets/wsl.png'),
+                description:
+                    "2021 Women's Biggest Paddle Nominee: Paige Alms At Todos Santos on January 11, 2021. Video From Ryan Craig.",
+            },
+        },
     ];
 
     get creator() {
-        return this.creators[3];
+        return this.creators[4];
     }
 
     mounted() {
