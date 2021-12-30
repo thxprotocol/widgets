@@ -284,10 +284,22 @@ export default class ViewCollect extends Vue {
                     "2021 Women's Biggest Paddle Nominee: Paige Alms At Todos Santos on January 11, 2021. Video From Ryan Craig.",
             },
         },
+        {
+            name: 'Colin Furze',
+            pool: 'The Colin Furze Collection',
+            picture: require('../assets/furze-picture.png'),
+            collectible: {
+                title: 'The big dump',
+                avatar: require('../assets/furze-avatar.png'),
+                asset: require('../assets/furze.png'),
+                description:
+                    'The world’s fastest fully-working toilet, it even flushes at a whopping 55mph. This petrol-powered lavatory uses a powerful 140cc motorbike engine and flushes using a button on the handle bars.',
+            },
+        },
     ];
 
     get creator() {
-        return this.creators[4];
+        return this.creators[5];
     }
 
     mounted() {
